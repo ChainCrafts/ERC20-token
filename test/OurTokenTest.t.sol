@@ -12,7 +12,7 @@ contract OurTokenTest is Test {
     DeployOurToken public deployer;
 
     uint256 internal constant INITIAL_SUPPLY = 1_000_000e18;
-    uint256 internal constant STARTING_BALANCE = 100e18;
+    uint256 internal constant STARTING_BALANCE = 1000e18;
 
     bytes32 internal constant TRANSFER_EVENT_SIG =
         keccak256("Transfer(address,address,uint256)");

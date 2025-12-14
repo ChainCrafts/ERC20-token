@@ -26,7 +26,11 @@ contract ManualToken {
     // EVENTS (Required by ERC20 Standard)
     // ============================================
     event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 
     // ============================================
     // CONSTRUCTOR
@@ -76,7 +80,10 @@ contract ManualToken {
     /**
      * @dev Return the allowance one address has given another
      */
-    function allowance(address owner, address spender) public view returns (uint256) {
+    function allowance(
+        address owner,
+        address spender
+    ) public view returns (uint256) {
         return _allowances[owner][spender];
     }
 
@@ -112,7 +119,11 @@ contract ManualToken {
      * @param to the recipient address
      * @param amount the amount to transfer
      */
-    function transferFrom(address from, address to, uint256 amount) public returns (bool) {
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) public returns (bool) {
         address spender = msg.sender;
 
         //check and update allowance
@@ -135,7 +146,10 @@ contract ManualToken {
         require(to != address(0), "ERC20: Transfer to the zero address");
 
         uint256 fromBalace = _balances[from];
-        require(fromBalace >= amount, "ERC20: Transfer amount exceed the balance");
+        require(
+            fromBalace >= amount,
+            "ERC20: Transfer amount exceed the balance"
+        );
 
         //Update balances
         unchecked {
@@ -170,49 +184,58 @@ contract ManualToken {
      * @dev Internal burn function
      * Destroys tokens from an account
      */
-    function _burn(address account, uint256 amount) internal{
+    function _burn(address account, uint256 amount) internal {
         require(account != address(0), "ERC20: burn from the zero address");
 
         uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds the account balance");
+        require(
+            accountBalance >= amount,
+            "ERC20: burn amount exceeds the account balance"
+        );
 
         //Update balances
-        unchecked{
+        unchecked {
             _balances[account] -= amount;
             // Overflow not possible: amount <= accountBalance <= totalSupply
             _totalSupply -= amount;
         }
-        emit Transfer(account,address(0),amount);
+        emit Transfer(account, address(0), amount);
     }
 
     /**
      * @dev Internal approve function
      * Sets allowance for a spender
      */
-    function _approve(address owner, address spender, uint256 amount) internal{
+    function _approve(address owner, address spender, uint256 amount) internal {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
         //Set allowance
         _allowances[owner][spender] = amount;
 
-        emit Approval(owner,spender,amount);
+        emit Approval(owner, spender, amount);
     }
 
     /**
      * @dev Internal function to spend allowance
      * Reduces the allowance when transferFrom is called
      */
-    function _spendAllowance(address owner, address spender, uint256 amount) internal{
+    function _spendAllowance(
+        address owner,
+        address spender,
+        uint256 amount
+    ) internal {
         uint256 currentAllowance = allowance(owner, spender);
         //if allowance is not unlimited
-        if(currentAllowance != type(uint256).max){
-            require(currentAllowance >= amount, "ERC20: insufficient allowance");
-            unchecked{
-                _approve(owner,spender,amount);
+        if (currentAllowance != type(uint256).max) {
+            require(
+                currentAllowance >= amount,
+                "ERC20: insufficient allowance"
+            );
+            unchecked {
+                _approve(owner, spender, currentAllowance - amount);
             }
         }
-
     }
 
     // ============================================
@@ -221,23 +244,35 @@ contract ManualToken {
     /**
      * @dev increase allowance granted to a sender
      */
-    function increaseAllowance(address spender, uint256 addedValue) public returns(bool){
+    function increaseAllowance(
+        address spender,
+        uint256 addedValue
+    ) public returns (bool) {
         address owner = msg.sender;
-        _approve(owner, spender, allowance(owner,spender) + addedValue);
+        _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
     }
 
     /**
      * @dev decrease allowance granted to a sender
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public returns(bool){
+    function decreaseAllowance(
+        address spender,
+        uint256 subtractedValue
+    ) public returns (bool) {
         address owner = msg.sender;
-        uint256 currentAllowance = allowance(owner,spender);
-        require(currentAllowance>= subtractedValue, "decreased allowance below 0");
-        unchecked{
-            _approve(owner, spender, allowance(owner,spender) - subtractedValue);
+        uint256 currentAllowance = allowance(owner, spender);
+        require(
+            currentAllowance >= subtractedValue,
+            "decreased allowance below 0"
+        );
+        unchecked {
+            _approve(
+                owner,
+                spender,
+                allowance(owner, spender) - subtractedValue
+            );
         }
         return true;
     }
-
 }
